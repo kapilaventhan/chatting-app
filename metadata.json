@@ -1,6 +1,0 @@
-{
-  "name": "SecureSync Chat",
-  "description": "An end-to-end encrypted messaging and peer-to-peer video/audio calling application with real-time syncing.",
-  "requestFramePermissions": ["camera", "microphone"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
