@@ -466,8 +466,13 @@ export default function App() {
     const pc = setupPeerConnection(peerId, acquired);
 
     try {
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
+      await new Promise(resolve =>
+  setTimeout(resolve, 1000)
+);
+
+const offer = await pc.createOffer();
+
+await pc.setLocalDescription(offer);
       
       // Dispatch over signaling websocket
       if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -481,8 +486,12 @@ export default function App() {
       }
 
       // Send initial handshake descriptions
-      sendWebrtcSignal(peerId, offer);
-      addLog("SDP Offer dispatched to target peer.");
+      sendWebrtcSignal(
+  peerId,
+  pc.localDescription
+);
+
+addLog("SDP Offer dispatched.");
     } catch (err) {
       console.error("SDP offer creation failed:", err);
     }
