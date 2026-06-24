@@ -396,7 +396,7 @@ export default function App() {
     }
   };
 
-  const setupPeerConnection = (targetId: string, stream: MediaStream) => {
+  const setupPeerConnection = (targetId: string, stream: MediaStream) => {  
     addLog("Configuring peer WebRTC connections with active ICE bridges...");
     const pc = new RTCPeerConnection({
       iceServers: [
@@ -422,6 +422,11 @@ export default function App() {
         sendWebrtcSignal(targetId, { candidate: event.candidate });
       }
     };
+    pc.onsignalingstatechange = () => {
+  addLog(
+    `Signaling State: ${pc.signalingState}`
+  );
+};
 
     pc.onconnectionstatechange = () => {
       addLog(`WebRTC Channel State: ${pc.connectionState}`);
