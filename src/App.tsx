@@ -488,27 +488,45 @@ export default function App() {
     }
   };
 
-  // Answering incoming invite
-  const onAnswer = async (type: CallType) => {
-    addLog("Analyzing invitation... Launching secure codec session...");
-    setCallSession(curr => ({ ...curr, status: "connected", type }));
+// Answering incoming invite
+const onAnswer = async (type: CallType) => {
+  addLog("Analyzing invitation... Launching secure codec session...");
 
-    const acquired = await acquireMedia(type);
-    setLocalStream(acquired);
-    localStreamRef.current = acquired;
+  setCallSession(curr => ({
+    ...curr,
+    status: "connected",
+    type
+  }));
 
-    const pc = setupPeerConnection(callSession.peerId, acquired);
+  const acquired = await acquireMedia(type);
+  setLocalStream(acquired);
+  localStreamRef.current = acquired;
 
-    try {
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
+  const pc = setupPeerConnection(callSessionRef.current.peerId, acquired);
 
-      sendCallResponse(callSession.peerId, "accept", type, answer);
-      addLog("SDP Answer dispatched. Tuning stream layers...");
-    } catch (err) {
-      console.error("Error creating SDP Answer:", err);
+  try {
+    // Wait until remote offer is received
+    if (!pc.currentRemoteDescription) {
+      addLog("Waiting for remote SDP offer...");
+      return;
     }
-  };
+
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+
+    sendCallResponse(
+      callSessionRef.current.peerId,
+      "accept",
+      type,
+      answer
+    );
+
+    addLog("SDP Answer dispatched. Tuning stream layers...");
+  } catch (err) {
+    console.error("Error creating SDP Answer:", err);
+    addLog("Failed to create SDP answer.");
+  }
+};
 
   const onDecline = () => {
     sendCallResponse(callSession.peerId, "reject", callSession.type);
