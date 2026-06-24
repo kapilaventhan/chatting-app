@@ -106,28 +106,24 @@ export default function App() {
         else if (type === "call_invitation_response") {
           const { receiverId, answer, sdp, callType } = data;
           
-          if (answer === "accept") {
-            addLog("P2P call accepted! Customizing descriptions...");
-            setCallSession(curr => ({ ...curr, status: "connected" }));
-            
-            // Post update log endpoint
-            if (activeCallLogIdRef.current) {
-              await fetch(`/api/calls/log/${activeCallLogIdRef.current}/end`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status: "connected" })
-              });
-            }
+         if (answer === "accept") {
+  addLog("P2P call accepted!");
 
-            if (sdp && pcRef.current) {
-              try {
-                await pcRef.current.setRemoteDescription(new RTCSessionDescription(sdp));
-                addLog("Local and Remote descriptions synchronised successfully.");
-              } catch (err) {
-                console.error("SDP description sync failed:", err);
-              }
-            }
-          } 
+  if (sdp && pcRef.current) {
+    try {
+      await pcRef.current.setRemoteDescription(
+        new RTCSessionDescription(sdp)
+      );
+    } catch (err) {
+      console.error("Remote SDP error:", err);
+    }
+  }
+
+  setCallSession(curr => ({
+    ...curr,
+    status: "connected"
+  }));
+}
           else if (answer === "reject") {
             addLog("Active handshakes declined.");
             
