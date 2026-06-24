@@ -187,16 +187,22 @@ async function startServer() {
 
   // Get User Profile
   app.get("/api/users/profile/:userId", (req, res) => {
-    try {
-      const user = dbStore.getUserById(req.params.userId);
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-      res.json(user);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
+  console.log(
+    "[PROFILE REQUEST]",
+    req.params.userId,
+    "FOUND:",
+    !!dbStore.getUserById(req.params.userId)
+  );
+
+  const user = dbStore.getUserById(req.params.userId);
+
+  if (!user) {
+    console.log("[PROFILE MISSING]", req.params.userId);
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json(user);
+});
 
   // Fetch Users to search/add
   app.get("/api/users", (req, res) => {
