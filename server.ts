@@ -537,6 +537,7 @@ async function startServer() {
           }
 
           case "invite_call": {
+            console.log("[CALL INVITE]", payload);
             const { callerId, callerName, receiverId, callType, callId } = payload;
             console.log(`[P2P] call invitation sent from ${callerId} (${callerName}) to ${receiverId}`);
             activeCalls.set(callerId, receiverId);
@@ -552,6 +553,7 @@ async function startServer() {
           }
 
           case "respond_call": {
+            console.log("[CALL RESPONSE]", payload);
             const { receiverId, callerId, answer, sdp, callType } = payload; // answer: "accept" | "reject" | "busy"
             console.log(`[P2P] call invitation response by ${receiverId} is ${answer}`);
             if (answer !== "accept") {
@@ -568,15 +570,22 @@ async function startServer() {
             break;
           }
 
-          case "webrtc_signaling": {
-            const { targetId, signal } = payload;
-            sendToUserSocket(targetId, {
-              type: "webrtc_signaling_forward",
-              senderId: activeSockets.get(ws)?.userId,
-              signal
-            });
-            break;
-          }
+        case "webrtc_signaling": {
+     const { targetId, signal } = payload;
+
+  console.log(
+    `[WEBRTC SIGNAL] ${activeSockets.get(ws)?.userId} -> ${targetId}`,
+    signal.type || "ICE"
+  );
+
+  sendToUserSocket(targetId, {
+    type: "webrtc_signaling_forward",
+    senderId: activeSockets.get(ws)?.userId,
+    signal
+  });
+
+  break;
+}
 
           case "hangup_call": {
             const { partnerId } = payload;
