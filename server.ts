@@ -542,13 +542,19 @@ async function startServer() {
             console.log(`[P2P] call invitation sent from ${callerId} (${callerName}) to ${receiverId}`);
             activeCalls.set(callerId, receiverId);
             activeCalls.set(receiverId, callerId);
-            sendToUserSocket(receiverId, {
-              type: "incoming_call_request",
-              callerId,
-              callerName,
-              callType,
-              callId
-            });
+            const sent = sendToUserSocket(receiverId, {
+  type: "incoming_call_request",
+  callerId,
+  callerName,
+  callType,
+  callId
+});
+
+console.log(
+  "[CALL INVITE SENT]",
+  receiverId,
+  sent ? "SUCCESS" : "FAILED"
+);
             break;
           }
 
