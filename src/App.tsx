@@ -303,15 +303,22 @@ export default function App() {
     }
   };
 
-  const sendWebrtcSignal = (targetId: string, signal: any) => {
-    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify({
-        type: "webrtc_signaling",
-        targetId,
-        signal
-      }));
-    }
-  };
+const sendWebrtcSignal = (targetId: string, signal: any) => {
+  console.log(
+    "[SEND SIGNAL]",
+    signal.type || "ICE",
+    "TO",
+    targetId
+  );
+
+  if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+    socketRef.current.send(JSON.stringify({
+      type: "webrtc_signaling",
+      targetId,
+      signal
+    }));
+  }
+};
 
   // Safe device stream grabber fallback
   const acquireMedia = async (type: CallType): Promise<MediaStream> => {
