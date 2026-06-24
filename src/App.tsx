@@ -431,12 +431,20 @@ const sendWebrtcSignal = (targetId: string, signal: any) => {
   );
 };
 
-    pc.onconnectionstatechange = () => {
-      addLog(`WebRTC Channel State: ${pc.connectionState}`);
-      if (pc.connectionState === "connected") {
-        addLog("P2P E2EE Connection established successfully!");
-      }
-    };
+pc.onconnectionstatechange = () => {
+  console.log(
+    "CONNECTION STATE:",
+    pc.connectionState
+  );
+
+  addLog(`WebRTC State: ${pc.connectionState}`);
+};
+    pc.oniceconnectionstatechange = () => {
+  console.log(
+    "ICE STATE:",
+    pc.iceConnectionState
+  );
+};
 
     return pc;
   };
