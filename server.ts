@@ -560,13 +560,19 @@ async function startServer() {
               activeCalls.delete(callerId);
               activeCalls.delete(receiverId);
             }
-            sendToUserSocket(callerId, {
-              type: "call_invitation_response",
-              receiverId,
-              answer,
-              sdp,
-              callType
-            });
+            const sent = sendToUserSocket(callerId, {
+  type: "call_invitation_response",
+  receiverId,
+  answer,
+  sdp,
+  callType
+});
+
+console.log(
+  "[CALL RESPONSE SENT]",
+  callerId,
+  sent ? "SUCCESS" : "FAILED"
+);
             break;
           }
 
