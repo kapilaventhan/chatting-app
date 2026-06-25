@@ -588,12 +588,15 @@ console.log(
             break;
           }
 
-        case "webrtc_signaling": {
-     const { targetId, signal } = payload;
+       case "webrtc_signaling": {
+  const { targetId, signal } = payload;
 
   console.log(
-    `[WEBRTC SIGNAL] ${activeSockets.get(ws)?.userId} -> ${targetId}`,
-    signal.type || "ICE"
+    "[WEBRTC SIGNAL]",
+    activeSockets.get(ws)?.userId,
+    "->",
+    targetId,
+    signal.type
   );
 
   sendToUserSocket(targetId, {
