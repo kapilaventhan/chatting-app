@@ -432,18 +432,28 @@ const sendWebrtcSignal = (targetId: string, signal: any) => {
 };
 
 pc.onconnectionstatechange = () => {
-  console.log(
-    "CONNECTION STATE:",
-    pc.connectionState
-  );
+  console.log("CONNECTION STATE:", pc.connectionState);
 
   addLog(`WebRTC State: ${pc.connectionState}`);
+
+  if (pc.connectionState === "connected") {
+    addLog("P2P E2EE Connection established successfully!");
+  }
+
+  if (
+    pc.connectionState === "failed" ||
+    pc.connectionState === "disconnected"
+  ) {
+    console.error("WebRTC connection failed");
+  }
 };
-    pc.oniceconnectionstatechange = () => {
-  console.log(
-    "ICE STATE:",
-    pc.iceConnectionState
-  );
+
+pc.oniceconnectionstatechange = () => {
+  console.log("ICE STATE:", pc.iceConnectionState);
+
+  if (pc.iceConnectionState === "failed") {
+    console.error("ICE negotiation failed");
+  }
 };
 
     return pc;
